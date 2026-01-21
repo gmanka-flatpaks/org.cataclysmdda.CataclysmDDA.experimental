@@ -1,8 +1,8 @@
 # inherited from: https://github.com/flathub/org.cataclysmdda.CataclysmDDA/blob/master/org.cataclysmdda.CataclysmDDA.yml
-id: "org.cataclysmdda.CataclysmDDA.experimental"
-runtime: "org.freedesktop.Platform"
-runtime-version: '24.08'
-sdk: org.freedesktop.Sdk//23.08
+id: org.cataclysmdda.CataclysmDDA.experimental
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
 command: cataclysm-tiles
 finish-args: 
   - --socket=pulseaudio
@@ -12,21 +12,26 @@ finish-args:
   - --device=dri
 
 modules:
+  - shared-modules/SDL2/SDL2_image.json
+  - shared-modules/SDL2/SDL2_ttf.json
+
   - name: cataclysm-tiles
     buildsystem: simple
     build-options:
       env:
         MAKE_ARGS: "PREFIX=/app LANGUAGES=all USE_XDG_DIR=1 TILES=1 SOUND=1 RELEASE=1 RUNTESTS=0 ASTYLE=0 LINTJSON=0"
+        C_INCLUDE_PATH: /app/include/SDL2
+        CPLUS_INCLUDE_PATH: /app/include/SDL2
     build-commands:
+      - sed -i "/#WARNINGS = -w/c WARNINGS = -w" Makefile
       - make -j $FLATPAK_BUILDER_N_JOBS $MAKE_ARGS
       - make $MAKE_ARGS localization
       - make $MAKE_ARGS install
     sources:
       - type: git
         url: https://github.com/CleverRaven/Cataclysm-DDA.git
-        commit: "9649249d0cda9ac4d9c9b33fe3d8cbfb4672657b"
+        tag: cdda-experimental-2026-01-21-2043
       - type: patch
         paths:
-          - patches/0001-f-disable-warnings.patch
           - patches/0001-r-adapting-xdg-for-experimental-builds.patch
           - patches/0002-r-adapting-makefile-for-experimental-build.patch
