@@ -31,6 +31,8 @@ modules:
       - type: git
         url: https://github.com/CleverRaven/Cataclysm-DDA.git
         tag: cdda-experimental-2026-01-21-2043
+        x-checker-data:
+          type: git
       - type: patch
         paths:
           - patches/0001-r-adapting-xdg-for-experimental-builds.patch
